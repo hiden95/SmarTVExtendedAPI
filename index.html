@@ -36,13 +36,13 @@ var respecConfig = {
 		key: "Repository",
 		data: [{
 			value: "We are on GitHub.",
-			href: "https://github.com/seanyhlin/TV-Manager-API/"
+			href: "https://github.com/hiden95/SmarTVExtendedAPI"
 			}, {
 			value: "File a bug.",
-			href: "https://github.com/seanyhlin/TV-Manager-API/issues"
+			href: "https://github.com/hiden95/SmarTVExtendedAPI/issues"
 			}, {
 			value: "Commit history.",
-			href: "https://github.com/seanyhlin/TV-Manager-API/commits/gh-pages"
+			href: ""
 		}]
 	}],
 	inlineCSS:    true,
@@ -98,9 +98,9 @@ var respecConfig = {
 					<tr><th>Type</th><th>Description</th></tr>
 				</thead>
 				<tbody>
-					<tr><td>store app</td><td>This application is launched(or ended) by User after that is downloaded and installed on the Smart TV device through App Store(or Market)</td></tr>
-					<tr><td>signal app</td><td>This application is launched(or ended) by Application Information Signal(AIT) of broadcasting service provider.</td></tr>
-					<tr><td>broadband app</td><td>This application is launched(or ended) by API call defined in Smart TV Extended APIs.</td></tr>
+					<tr><td><code>store app</code></td><td>This application is launched(or ended) by User after that is downloaded and installed on the Smart TV device through App Store(or Market)</td></tr>
+					<tr><td><code>signal app</code></td><td>This application is launched(or ended) by Application Information Signal(AIT) of broadcasting service provider.</td></tr>
+					<tr><td><code>broadband app</code></td><td>This application is launched(or ended) by API call defined in Smart TV Extended APIs.</td></tr>
 				</tbody>
 				</table>
 			</section>
@@ -111,8 +111,8 @@ var respecConfig = {
 					<tr><th>Type</th><th>Description</th></tr>
 				</thead>
 				<tbody>
-					<tr><td>package app</td><td>All application resources are compressed to specific packaging format. This application is delivered by App Store.</td></tr>
-					<tr><td>non-package app</td><td>This application is accessed by application URL.</td></tr>
+					<tr><td><code>package app</code></td><td>All application resources are compressed to specific packaging format. This application is delivered and installed through App Store.</td></tr>
+					<tr><td><code>non-package app</code></td><td>This application is accessed by application URL.</td></tr>
 				</tbody>
 				</table>
 			</section>
@@ -123,8 +123,8 @@ var respecConfig = {
 					<tr><th>Type</th><th>Description</th></tr>
 				</thead>
 				<tbody>
-					<tr><td>broadcast activated app</td><td>When this application run, the broadcasting resources(ex.decoder, demuxer, SI filter) keep still their status. Application is running with broadcast service together.</td></tr>
-					<tr><td>broadcast inactivated app</td><td>When this application run, the broadcasting resources shall be suspended. Application is running alone without broadcast service</td></tr>
+					<tr><td><code>broadcast activated app</code></td><td>When this application run, the broadcasting resources(ex.decoder, demuxer, SI filter) keep still their status. Application is running with broadcast service together.</td></tr>
+					<tr><td><code>broadcast inactivated app</code></td><td>When this application run, the broadcasting resources shall be suspended. Application is running alone without broadcast service</td></tr>
 				</tbody>
 				</table>
 			</section>
@@ -135,8 +135,8 @@ var respecConfig = {
 					<tr><th>Type</th><th>Description</th></tr>
 				</thead>
 				<tbody>
-					<tr><td>channel bound app</td><td>When TV channel is changed, this application is ended automatically.</td></tr>
-					<tr><td>channel unbound app</td><td>When TV channel is changed, this application is still running in the changed channel.</td></tr>
+					<tr><td><code>channel bound app</code></td><td>When TV channel is changed, this application is ended automatically.</td></tr>
+					<tr><td><code>channel unbound app</code></td><td>When TV channel is changed, this application is still running in the new channel.</td></tr>
 				</tbody>
 				</table>
 			</section>
@@ -147,28 +147,28 @@ var respecConfig = {
 					<tr><th>Execution</th><th>Packaging</th><th>Broadcasting</th><th>Channel</th></tr>
 				</thead>
 				<tbody>
-					<tr><td>store app</td><td>package app</td><td>According to "apptype" attribute</td><td>channel bound</td></tr>
-					<tr><td>signal app</td><td>non-package app</td><td>broadcast activated app</td><td>According to "service_bound_flag"</td></tr>
-					<tr><td>broadband app</td><td>non-package app</td><td>broadcast inactivated app</td><td>N/A</td></tr>
+					<tr><td><code>store app</code></td><td><code>package app</code></td><td>According to <code>apptype</code> attribute</td><td><code>channel bound</code></td></tr>
+					<tr><td><code>signal app</code></td><td><code>non-package app</code></td><td><code>broadcast activated app</code></td><td>According to <code>service_bound_flag</code></td></tr>
+					<tr><td><code>broadband app</code></td><td><code>non-package app</code></td><td><code>broadcast inactivated app</code></td><td>N/A</td></tr>
 				</tbody>
 				</table>
 			</section>
 			<section>
 				<h2>Application Life Cycle</h2>
-				<p> The cases that application can be started are like below. </p>
+				<p> The cases that any application can be started are like below. </p>
 				<ul>
-					<li>User select store app that is already installed on the Smart TV device.</li>
-					<li>API call by current running application. (<code>createApplication</code>)</li>
+					<li>User select <code>store app</code> that is already installed on the Smart TV device.</li>
+					<li>API call by the current running application. (<code>createApplication</code>)</li>
 					<li>Application singal(<code>AUTOSTART</code>) in broadcasting stream made by broadcasting service provider.</li>
 				</ul>
 				<p> On the other hands, the cases that application can be ended are like below. </p>
 				<ul>
-					<li>Channel change while channel-bound application is running.</li>
+					<li>Channel change while <code>channel-bound application</code> is running.</li>
 					<li>API call by current running application. (<code>destroyApplication</code>)</li>
-					<li>Application singal(<code>KILL</code>) in broadcasting stream made by broadcasting service provider.</li>
-					<li>Application Priority (Low priority application shall be ended when higher application is started.)</li>
-					<li>EXIT key on remote controller is pressed by User.</li>
-					<li>Smart TV Exception or Unexpected Case.(ex. System Memory Full)</li>
+					<li>Application signal(<code>KILL</code>) in broadcasting stream made by broadcasting service provider.</li>
+					<li>Application priority (Low priority application shall be ended when higher application is started.)</li>
+					<li><code>EXIT</code> key on remote controller is pressed by User.</li>
+					<li>Smart TV exceptions or unexpected cases.(ex. system memory full)</li>
 				</ul>				
 			</section>
 		</section>
@@ -188,19 +188,19 @@ var respecConfig = {
 				<li>simple application location descriptor</li>
 				<li>application name descriptor</li>
 			</ul>
-			<p> As application delivery protocol, this specification just support HTTP and it is not support application delivery through DSMCC.
+			<p> As application delivery protocol, this specification support HTTP only and it doesn't support application delivery through DSMCC.
 		</section>
 		<section>
 			<h2>Application Packaging</h2>
 			<p>
-			All applications distributed and installed through App Store shall be compressed and packaged by specific format. The package requirements of this specification is based on [[widgets]]
+			All applications distributed and installed through App Store shall be compressed and packaged by specific format. The package requirements of this specification is based on [[widgets]].
 			Additionally, this specification introduces some features and element like below.</p>
 			<p>This specification defines new URL scheme to use it as "id" attribute's value of widget element.</p>
-			<div class="note">
+			<div class="highlight">
 			&emsp;&emsp;&emsp; <code>tvapp://widget.organization_id.application_id</code>
 			</div>
-			<p>	All applications complied with this specification shall have id as fair of two values to identify it; organization_id and application_id.
-			So, the package application shall assign the value to as "id" attribute's value of widget element according to URL scheme above.</p>
+			<p>	All applications complied with this specification shall have id as the pair of two values to identify it; organization_id and application_id.
+			So, the package application shall assign the value to as <code>id</code> attribute of widget element according to URL scheme above.</p>
 			<p> And the following elements are defined newly in this specification.</p>
 			<section>
 				<h2>The <code>apptype</code> Element and its Attributes.</h2>
@@ -222,8 +222,8 @@ var respecConfig = {
 						<tr><th>Value</th><th>Description</th></tr>
 					</thead>
 					<tbody>
-						<tr><td>activated</td><td>The application will be launched as broadcast activated application.</td></tr>
-						<tr><td>inactivated</td><td>The application will be launched as broadcast inactivated application.</td></tr>
+						<tr><td><code>activated</code></td><td>The application will be launched as broadcast activated application.</td></tr>
+						<tr><td><code>inactivated</code></td><td>The application will be launched as broadcast inactivated application.</td></tr>
 					</tbody>
 					</table>			
 				</section>
@@ -272,7 +272,7 @@ var respecConfig = {
 			<ul>
 				<li>Virtual KeyCode Definition : It does not follow the "Virtual KeyCode Constants" of [[OIPFTVPROFILE]] 6.2</li>
 				<li>Geolocation API supported</li>
-				<li>Media APIs profile to handle broadcasting video</li>
+				<li>Media APIs profile for handling broadcasting video</li>
 			</ul>			
 		</section>
 		<section>
@@ -315,8 +315,8 @@ var respecConfig = {
 					<tr><th>System Format</th><th>Video Format</th><th>Audio Format</th><th>MIME Type</th></tr>
 				</thead>
 				<tbody>
-					<tr><td>TS</td><td>H.264</td><td>MPEG-2 AAC, AC3</td><td>video/mpeg</td></tr>
-					<tr><td>MP4</td><td>H.264</td><td>MPEG-2 AAC, MPEG-4 HE AAC, AC3</td><td>video/mp4</td></tr>
+					<tr><td>TS</td><td>H.264</td><td>MPEG-2 AAC,<br>AC3</td><td>video/mpeg</td></tr>
+					<tr><td>MP4</td><td>H.264</td><td>MPEG-2 AAC,<br>MPEG-4 HE AAC,<br> AC3</td><td>video/mp4</td></tr>
 				</tbody>
 				</table>
 			</section>			
@@ -343,16 +343,16 @@ var respecConfig = {
 				<tr><th>Requirement</th><th>Description</th></tr>
 			</thead>
 			<tbody>
-				<tr><td>Screen Resolution</td><td>960X540(at least), 1280X720(recommended)</td></tr>
-				<tr><td>Application Transparency</td><td>TV devices supported transparency completely. It shall make user not to know the difference between original broadcasting video and the same video behind the transparency application.</td></tr>
-				<tr><td>Color Format for Graphic Plane</td><td>RGBA16(at least), RGBA32(recommended)</td></tr>
-				<tr><td>Text Input Method</td><td>TV device shall the method for text input like IME or virtual keyboard.(specific method is not defined)</td></tr>
-				<tr><td>Video scaling</td><td>Arbitrary video scaling shall be supported between 1/4 X 1/4 and 2 X 2. The recommended minimum size is 1/8 X 1/8.</td></tr>
-				<tr><td>Video aspect ratio</td><td>The original aspect ratio of decoded video shall be preserved when the video is scaled.</td></tr>
-				<tr><td>Font</td><td>This specification does not define the default font. The device shall support web download font.</td></tr>
-				<tr><td>Runtime memory</td><td>The minimum runtime memory supported by device is 30MBytes.</td></tr>
-				<tr><td>Input Device</td>
-				<td>The device shall support the remote controller by default. 
+				<tr><td><code>Screen Resolution</code></td><td>960 X 540(at least), 1280 X 720(recommended)</td></tr>
+				<tr><td><code>Application Transparency</code></td><td>TV devices supported transparency completely. It shall make user not to know the difference between original broadcasting video and the same video behind the transparency application.</td></tr>
+				<tr><td><code>Color Format for Graphic Plane</code></td><td>RGBA16(at least), RGBA32(recommended)</td></tr>
+				<tr><td><code>Text Input Method</code></td><td>TV device shall have the method for text input like IME or virtual keyboard.(specific method is not defined)</td></tr>
+				<tr><td><code>Video scaling</code></td><td>Arbitrary video scaling shall be supported between 1/4 X 1/4 and 2 X 2. The recommended minimum size is 1/8 X 1/8.</td></tr>
+				<tr><td><code>Video aspect ratio</code></td><td>The original aspect ratio of decoded video shall be preserved when the video is scaled.</td></tr>
+				<tr><td><code>Font</code></td><td>This specification does not define the default font. The device shall support web download font.</td></tr>
+				<tr><td><code>Runtime memory</code></td><td>The minimum runtime memory supported by device is 30MBytes.</td></tr>
+				<tr><td><code>Input Device</code></td>
+				<td>The receiver shall support the remote controller by default. 
 				When the button on remote controller is pressed, the device shall occur key event using virtual key code defined in this specification.(ex.VK_RED, VK_UP, VK_ENTER, VK_9 and so on)
 				<br>And the pointing device like mouse is recommended.</td></tr>
 			</tbody>
@@ -369,13 +369,12 @@ var respecConfig = {
 				<tr><th>Profile</th><th>Description</th></tr>
 			</thead>
 			<tbody>
-				<tr><td>Full Profile</td><td>The device of this profile supports all requirements of this specification.</td></tr>
-				<tr><td>Broadcast Related Profile</td><td>The device of this profile just support the requirements for the application launched by broadcasting signal. 
+				<tr><td><code>Full Profile</code></td><td>The receiver of this profile supports all requirements of this specification.</td></tr>
+				<tr><td><code>Broadcast Related Profile</code></td><td>The receiver of this profile just support the requirements for the application launched by broadcasting signal. 
 				<br>So, pakcage application is excluded in this profile.</td></tr>
-				<tr><td>Basic Package Profile</td><td>The device of this profile just support the limited package application. 
-				<br>The package application with broadcast activated feature is not included this profile.
+				<tr><td><code>Basic Package Profile</code></td><td>The receiver of this profile just support the limited package application. The package application with broadcast activated feature is not included this profile.
 				<br>And the signal application launched by broadcastor is also excluded in this profile.</td></tr>
-				<tr><td>Advanced Package Profile</td><td>The device of this profile supports the full package application.
+				<tr><td><code>Advanced Package Profile</code></td><td>The receiver of this profile supports the full package application.
 				<br>However, the signal application launched by broadcastor is excluded in this profile.</td></tr>
 			</tbody>
 			</table>			
@@ -474,7 +473,7 @@ var respecConfig = {
 		<dl title="interface DrmExt" class="idl">
 			<dt>readonly attribute DrmAgent agent</dt>
 			<dd>
-			MUST return the object having APIs to communincate with the DRM agent of Smart TV.
+			MUST return the object having APIs to communicate with the DRM agent of Smart TV.
 			</dd>
 			<dt>readonly attribute DrmAVObject avObject</dt>
 			<dd>
@@ -486,27 +485,27 @@ var respecConfig = {
 		<h2>ApplicationManager Interface</h2>
 		<p>ApplicationManager interface defines APIs to control the current running application or application's lifecycle.</p>
 		<dl title="interface ApplicationManager" class="idl">
-			<dt>const unsigned short KEY_RED = 0x1</dt><dd>Red color key on remoted controller.</dd>
-			<dt>const unsigned short KEY_GREEN = 0x2</dt><dd>Green color key on remoted controller.</dd>
-			<dt>const unsigned short KEY_YELLOW = 0x4</dt><dd>Yellow color key on remoted controller.</dd>
-			<dt>const unsigned short KEY_BLUE = 0x8</dt><dd>Blue color key on remoted controller.</dd>
-			<dt>const unsigned short KEY_NAVIGATION = 0x10</dt><dd>Keys on remoted controller to navigate like allows and enter.</dd>
-			<dt>const unsigned short KEY_VCR = 0x20</dt><dd>Play control related keys like play, pause, stop and trick play.</dd>
-			<dt>const unsigned short KEY_CHANNEL = 0x40</dt><dd>Channel related keys like channel Up/Down.</dd>
-			<dt>const unsigned short KEY_INFO = 0x80</dt><dd>Info key on remoted controller.</dd>
-			<dt>const unsigned short KEY_MENU = 0x100</dt><dd>Menu key on remoted controller.</dd>
-			<dt>const unsigned short KEY_NUMERIC = 0x200</dt><dd>Numeric keys on remoted controller.</dd>
-			<dt>const unsigned short KEY_CHAR = 0x400</dt><dd>Character keys on remoted controller.</dd>
+			<dt>const unsigned short KEY_RED = 0x1</dt><dd>Red color key on remote controller.</dd>
+			<dt>const unsigned short KEY_GREEN = 0x2</dt><dd>Green color key on remote controller.</dd>
+			<dt>const unsigned short KEY_YELLOW = 0x4</dt><dd>Yellow color key on remote controller.</dd>
+			<dt>const unsigned short KEY_BLUE = 0x8</dt><dd>Blue color key on remote controller.</dd>
+			<dt>const unsigned short KEY_NAVIGATION = 0x10</dt><dd>Navigation keys on remote controller like arrows and enter.</dd>
+			<dt>const unsigned short KEY_VCR = 0x20</dt><dd>Play control keys like play, pause, stop and trick play.</dd>
+			<dt>const unsigned short KEY_CHANNEL = 0x40</dt><dd>Channel keys like channel Up/Down.</dd>
+			<dt>const unsigned short KEY_INFO = 0x80</dt><dd>Info key on remote controller.</dd>
+			<dt>const unsigned short KEY_MENU = 0x100</dt><dd>Menu key on remote controller.</dd>
+			<dt>const unsigned short KEY_NUMERIC = 0x200</dt><dd>Numeric keys on remote controller.</dd>
+			<dt>const unsigned short KEY_CHAR = 0x400</dt><dd>Character keys on remote controller.</dd>
 			<dt>const unsigned short KEY_OTHER = 0x800</dt><dd>Other Keys they are not defined in this interface.</dd>
-			<dt>const unsigned short ACCESS_BVIDEO = 0x1</dt><dd>Permission to access broadcasting video.</dd>
-			<dt>const unsigned short ACCESS_CHANNEL = 0x2</dt><dd>Permission to access chananel information.</dd>
-			<dt>const unsigned short ACCESS_PROGRAM = 0x4</dt><dd>Permission to access prograrm information.</dd>
-			<dt>const unsigned short ACCESS_FILEREAD = 0x10</dt><dd>Permission to access device file system to read data.</dd>
-			<dt>const unsigned short ACCESS_DEVICESTATUS = 0x20</dt><dd>Permission to access device specific information.</dd>
-			<dt>const unsigned short ACCESS_DEVICEINFO = 0x40</dt><dd>Permission to access device status information.</dd>
-			<dt>const unsigned short ACCESS_GEOLOCATION = 0x80</dt><dd>Permission to access geolocation information</dd>
-			<dt>const unsigned short ACCESS_MULTISCREEN = 0x100</dt><dd>Permission to access multiscreen feature</dd>
-			<dt>const unsigned short ACCESS_DRM = 0x200</dt><dd>Permission to access drm feature</dd>
+			<dt>const unsigned short ACCESS_BVIDEO = 0x1</dt><dd>Permission for access to broadcasting video.</dd>
+			<dt>const unsigned short ACCESS_CHANNEL = 0x2</dt><dd>Permission for access to chananel information.</dd>
+			<dt>const unsigned short ACCESS_PROGRAM = 0x4</dt><dd>Permission for access to prograrm information.</dd>
+			<dt>const unsigned short ACCESS_FILEREAD = 0x10</dt><dd>Permission for access to device file system to read data.</dd>
+			<dt>const unsigned short ACCESS_DEVICESTATUS = 0x20</dt><dd>Permission for access to device specific information.</dd>
+			<dt>const unsigned short ACCESS_DEVICEINFO = 0x40</dt><dd>Permission for access to device status information.</dd>
+			<dt>const unsigned short ACCESS_GEOLOCATION = 0x80</dt><dd>Permission for access to geolocation information</dd>
+			<dt>const unsigned short ACCESS_MULTISCREEN = 0x100</dt><dd>Permission for access to multiscreen feature</dd>
+			<dt>const unsigned short ACCESS_DRM = 0x200</dt><dd>Permission for access to drm feature</dd>
 
 			<dt>readonly attribute boolean visible</dt>
 			<dd>
@@ -536,11 +535,11 @@ var respecConfig = {
 			</dd>		
 			<dt>void hideApplication()</dt>
 			<dd>
-			This method is called to make the application unvisible
+			This method is called to make the application invisible
 			</dd>		
 			<dt>void createApplication(DOMString appURL)</dt>
 			<dd>
-			This method is called to launch new application indicated by appURL instead of the current running application.
+			This method is called to launch new application indicating by appURL instead of the current running application.
 			<dl class='parameters'>
 				<dt>DOMString appURL</dt>
 				<dd>
@@ -575,7 +574,7 @@ var respecConfig = {
 	</section>
     <section>
 		<h2>StoreAppInfo Interface</h2>
-		<p>StoreAppInfo Interface defines APIs to get information about store applications they was downloaded and installed through App Store. </p>
+		<p>StoreAppInfo Interface defines the APIs to get information about store applications they was downloaded and installed through App Store. </p>
 		<dl title="interface StoreAppInfo" class="idl">
 			<dt>StoreAppList getStoreApps(optional DOMString filter)</dt>
 			<dd>
@@ -660,7 +659,7 @@ var respecConfig = {
 				Handles the <code>onProgramChanged</code> event of type ProgramChanged, fired when the broadcasting program is changed.
 			</dd>
 		</dl>
-		<p>In this specification, the change change operation can be done by HTML5 &lt;video&gt; element like below</p>
+		<p>In this specification, the channel change operation can be done by HTML5 &lt;video&gt; element like below</p>
 		<pre class="example highlight">
 			var video = document.querySelector('video');
 			var chMgr = tvExt.broadcast.channelManager;
@@ -696,7 +695,7 @@ var respecConfig = {
 	</section>
     <section>
 		<h2>ChannelMetadata Interface</h2>
-		<p>ChannelMetadata Interface defines APIs to access broadcasting program information.</p>
+		<p>ChannelMetadata Interface defines the APIs to access broadcasting program information.</p>
 		<dl title="interface ChannelMetadata" class="idl">
 			<dt>const unsigned short SORT_CHANNELS_SYSTEM_DEFAULT = 0</dt><dd>Channel sorting criteria by system default.</dd>
 			<dt>const unsigned short SORT_CHANNELS_NUMBER_ASCENDING = 1</dt><dd>Channel sorting criteria by number ascending.</dd>
@@ -722,7 +721,7 @@ var respecConfig = {
 				</dd>
 				<dt>optional DOMString filter</dt>
 				<dd>
-					filter option for the resulted channel list defined by manufactuerer
+					filter option for the resulted channel list defined by manufacturer
 				</dd>
 			</dl>			
 			</dd>
@@ -740,7 +739,7 @@ var respecConfig = {
 				</dd>
 				<dt>optional DOMString filter</dt>
 				<dd>
-					ilter option for the resulted program list defined by manufactuerer
+					filter option for the resulted program list defined by manufacturer
 				</dd>
 			</dl>			
 			</dd>
@@ -818,7 +817,7 @@ var respecConfig = {
 			</dd>
 			<dt>readonly attribute DOMString sourceURI</dt>
 			<dd>
-			This attribute indicates channel's sourceURI. This value is defined by Smart TV platform that is unique on device's channel list.
+			This attribute indicates channel's sourceURI. This value is defined by Smart TV platform and it shall be unique on device's channel list.
 			The value is used for channel binding with HTML5 &lt;video&gt; element and channel change operation.
 			</dd>
 			<dt>DOMString getAttribute(DOMString attributeName)</dt>
@@ -987,7 +986,7 @@ var respecConfig = {
 	</section>		
     <section>
 		<h2>NetworkInfo Interface</h2>
-		<p>NetworkInfo Interface defines the detail information for the element video in the specific program.</p>
+		<p>NetworkInfo Interface defines the device's network information that the application is running on.</p>
 		<dl title="interface NetworkInfo" class="idl">
 			<dt>const unsigned short TYPE_ETHERNET = 0</dt><dd>Ethernet type of network connection</dd>
 			<dt>const unsigned short TYPE_IEEE802_11 = 1</dt><dd>IEEE 802.11 type of network connection</dd>
