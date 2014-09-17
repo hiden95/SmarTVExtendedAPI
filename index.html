@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart TV Extended APIs (HTML5 Based Smart TV Platform)</title>
+<style>
+</style>
+<script src='https://www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
+<script class="remove">
+var respecConfig = {
+	specStatus: "unofficial", // "ED",
+	shortName: "Smart TV Extended API",
+	editors: [{
+		name: "DongHoon Lee",
+		company: "TTA",
+		companyURL: "http://www.tta.or.kr/English/index.jsp",
+		mailto: "dhlee@tta.or.kr"
+		}, {
+		name: "HoYoun Kim",
+		company: "TTA",
+		companyURL: "http://www.tta.or.kr/English/index.jsp",
+		mailto: "hykimfnd@tta.or.kr"
+		}, {
+		name: "HeeSeon Hwang",
+		company: "TTA",
+		companyURL: "http://www.tta.or.kr/English/index.jsp",
+		mailto: "domich.hwang@tta.or.kr"
+	}],
+	publishDate:         "", // no needed for "ED" or "unofficial"
+	edDraftURI:          "http://www.tta.or.kr/English/index.jsp", // needed for "ED"
+	previousPublishDate: "", // needed for "WD", "LC", "CR"
+	previousMaturity:    "", // needed for "WD", "LC", "CR"
+	lcEnd:               "", // needed for "LC"
+	crEnd:               "", // needed for "CR"
+	otherLinks: [{
+		key: "Repository",
+		data: [{
+			value: "We are on GitHub.",
+			href: "https://github.com/hiden95/SmarTVExtendedAPI"
+			}, {
+			value: "File a bug.",
+			href: "https://github.com/hiden95/SmarTVExtendedAPI/issues"
+			}, {
+			value: "Commit history.",
+			href: ""
+		}]
+	}],
+	inlineCSS:    true,
+	noIDLIn:      true,
+	noIDLSorting: true,
+	localBiblio:  {
+	    "DVBSIGNAL": {
+	        title: "ETSI TS 102 809 V1.1.1, 'Digital Video Broadcasting (DVB); Signalling and carriage of interactive applications and services in Hybrid Broadcast/Broadband environments', 2010.01"
+	    },
+	    "OIPFTVPROFILE" : {
+	    	title: "Open IPTV Forum Feature Package Specification, 'Volume 5a - Web Standards TV Profile [V1.0.0]', 2013.04."
+	    },
+	    "CEA-2014B" : {
+	    	title: "ANSI/CEA, ANSI/CEA-2014-B, 'Web-based Protocol and Framework for Remote User Interface on UPnP Networks and the Internet(Web4CE)'"
+	    }
+	}	
+};
+</script>
+</head>
+<body>
+	<section id="abstract">
+		This document introduces Smart TV Extended APIs. These APIs are defined in "HTML5 Based Smart TV Platform"(TTAK.KO-07.0111/R1) 
+		to control Smart TV specific features like channel, program, device and so on. The specification has been standardized for  
+		common platform of Smart TV based on W3C web runtime environment to make an application running on various devices with 
+		the same user experiences. Smart TV Extended APIs consist of application interfaces, broadcast interfaces, device interface, 
+		multiscreen interfaces and DRM interfaces. These interfaces can be accessed as attributes of window object that is used 
+		globally in web environment.
+	</section>
+    <section id="sotd">
+    </section>
+	<section class="informative">
+		<h2>Introduction</h2>
+		<p>
+			"HTML5 Based Smart TV Platform" specifies a common platform on which applications developed based on HTML5 
+			run in various broadcasting environments such as terrestrial, cable, satellite and IPTV. 
+			An application in compliance with this standard is developed and released taking advantage of HTML5-based 
+			technologies and interfaces and will provide the same user experience on various devices.
+			This standard proposes the generalized technology criteria for development, distribution and execution of HTML5
+			based smart TV platform's applications.
+		</p>
+		<p>
+			The followings are key features of this specification.
+		</p>
+		<section>
+			<h2>Application Model/Life cycle</h2>
+			<p>
+			Smart TV's application types are defined by the following criteria.
+			</p>
+			<section>
+				<h2>Execution Method</h2>
+				<table class="simple">
+				<thead>
+					<tr><th>Type</th><th>Description</th></tr>
+				</thead>
+				<tbody>
+					<tr><td><code>store app</code></td><td>This application is launched(or ended) by User after that is downloaded and installed on the Smart TV device through App Store(or Market)</td></tr>
+					<tr><td><code>signal app</code></td><td>This application is launched(or ended) by Application Information Signal(AIT) of broadcasting service provider.</td></tr>
+					<tr><td><code>broadband app</code></td><td>This application is launched(or ended) by API call defined in Smart TV Extended APIs.</td></tr>
+				</tbody>
+				</table>
+			</section>
+			<section>
+				<h2>App Packaging</h2>
+				<table class="simple">
+				<thead>
+					<tr><th>Type</th><th>Description</th></tr>
+				</thead>
+				<tbody>
+					<tr><td><code>package app</code></td><td>All application resources are compressed to specific packaging format. This application is delivered and installed through App Store.</td></tr>
+					<tr><td><code>non-package app</code></td><td>This application is accessed by application URL.</td></tr>
+				</tbody>
+				</table>
+			</section>
+			<section>
+				<h2>Broadcasting Relation</h2>
+				<table class="simple">
+				<thead>
+					<tr><th>Type</th><th>Description</th></tr>
+				</thead>
+				<tbody>
+					<tr><td><code>broadcast activated app</code></td><td>When this application run, the broadcasting resources(ex.decoder, demuxer, SI filter) keep still their status. Application is running with broadcast service together.</td></tr>
+					<tr><td><code>broadcast inactivated app</code></td><td>When this application run, the broadcasting resources shall be suspended. Application is running alone without broadcast service</td></tr>
+				</tbody>
+				</table>
+			</section>
+			<section>
+				<h2>Channel Bound</h2>
+				<table class="simple">
+				<thead>
+					<tr><th>Type</th><th>Description</th></tr>
+				</thead>
+				<tbody>
+					<tr><td><code>channel bound app</code></td><td>When TV channel is changed, this application is ended automatically.</td></tr>
+					<tr><td><code>channel unbound app</code></td><td>When TV channel is changed, this application is still running in the new channel.</td></tr>
+				</tbody>
+				</table>
+			</section>
+			<section>
+				<h2>App Relation for Definition Criteria</h2>
+				<table class="simple">
+				<thead>
+					<tr><th>Execution</th><th>Packaging</th><th>Broadcasting</th><th>Channel</th></tr>
+				</thead>
+				<tbody>
+					<tr><td><code>store app</code></td><td><code>package app</code></td><td>According to <code>apptype</code> attribute</td><td><code>channel bound</code></td></tr>
+					<tr><td><code>signal app</code></td><td><code>non-package app</code></td><td><code>broadcast activated app</code></td><td>According to <code>service_bound_flag</code></td></tr>
+					<tr><td><code>broadband app</code></td><td><code>non-package app</code></td><td><code>broadcast inactivated app</code></td><td>N/A</td></tr>
+				</tbody>
+				</table>
+			</section>
+			<section>
+				<h2>Application Life Cycle</h2>
+				<p> The cases that any application can be started are like below. </p>
+				<ul>
+					<li>User select <code>store app</code> that is already installed on the Smart TV device.</li>
+					<li>API call by the current running application. (<code>createApplication</code>)</li>
+					<li>Application singal(<code>AUTOSTART</code>) in broadcasting stream made by broadcasting service provider.</li>
+				</ul>
+				<p> On the other hands, the cases that application can be ended are like below. </p>
+				<ul>
+					<li>Channel change while <code>channel-bound application</code> is running.</li>
+					<li>API call by current running application. (<code>destroyApplication</code>)</li>
+					<li>Application signal(<code>KILL</code>) in broadcasting stream made by broadcasting service provider.</li>
+					<li>Application priority (Low priority application shall be ended when higher application is started.)</li>
+					<li><code>EXIT</code> key on remote controller is pressed by User.</li>
+					<li>Smart TV exceptions or unexpected cases.(ex. system memory full)</li>
+				</ul>				
+			</section>
+		</section>
+		<section>
+			<h2>Application Signaling</h2>
+			<p>
+			In this specification, application signaling definition is based on [[DVBSIGNAL]].
+			The definition of "application_signaling descriptor" that is used in PMT of broadcasting stream is complied with [[DVBSIGNAL]]'s 5.3.5.1.  
+			</p>
+			<p>
+			And the followings among AIT descriptors defined in [[DVBSIGNAL]] are supported in this specification.
+			</p>
+			<ul>
+				<li>application descriptor</li>
+				<li>application usage descriptor</li>
+				<li>transport protocol descriptor</li>
+				<li>simple application location descriptor</li>
+				<li>application name descriptor</li>
+			</ul>
+			<p> As application delivery protocol, this specification support HTTP only and it doesn't support application delivery through DSMCC.
+		</section>
+		<section>
+			<h2>Application Packaging</h2>
+			<p>
+			All applications distributed and installed through App Store shall be compressed and packaged by specific format. The package requirements of this specification is based on [[widgets]].
+			Additionally, this specification introduces some features and element like below.</p>
+			<p>This specification defines new URL scheme to use it as "id" attribute's value of widget element.</p>
+			<div class="highlight">
+			&emsp;&emsp;&emsp; <code>tvapp://widget.organization_id.application_id</code>
+			</div>
+			<p>	All applications complied with this specification shall have id as the pair of two values to identify it; organization_id and application_id.
+			So, the package application shall assign the value to as <code>id</code> attribute of widget element according to URL scheme above.</p>
+			<p> And the following elements are defined newly in this specification.</p>
+			<section>
+				<h2>The <code>apptype</code> Element and its Attributes.</h2>
+				<dl>
+				<dt>Context in which this element is used:</dt>
+				<dd>In a <code title="widget element">widget</code> element.</dd>
+				<dt>Content model:</dt>
+				<dd>Empty</dd>
+				<dt>Occurrences:</dt>
+				<dd>Zero or more</dd>
+				<dt>Attributes:</dt>
+				<dd>Global attributes, <code title="name short">type</code>, <code title="name short">offline</code>.</dd>
+				</dl>
+				<section>
+					<h2>The <code>type</code> Attribute</h2>
+					<p>This attribute indicates to application type related to application execution method. The value are pre-defined like below and one of the values shall be assigned.</p>
+					<table class="simple">
+					<thead>
+						<tr><th>Value</th><th>Description</th></tr>
+					</thead>
+					<tbody>
+						<tr><td><code>activated</code></td><td>The application will be launched as broadcast activated application.</td></tr>
+						<tr><td><code>inactivated</code></td><td>The application will be launched as broadcast inactivated application.</td></tr>
+					</tbody>
+					</table>			
+				</section>
+				<section>
+					<h2>The <code>offline</code> Attribute</h2>
+					<p>This attribute indicates that application can be launched without network connection after the install is completed. If "true", it means application can be launched.</p>
+				</section>
+			</section>
+			<section>
+				<h2>The <code>appdomain</code> Element and its Attributes.</h2>
+				<dl>
+				<dt>Context in which this element is used:</dt>
+				<dd>In a <code title="widget element">widget</code> element.</dd>
+				<dt>Content model:</dt>
+				<dd>Empty</dd>
+				<dt>Occurrences:</dt>
+				<dd>Zero or more</dd>
+				<dt>Attributes:</dt>
+				<dd>Global attributes, <code title="name short">value</code>.</dd>
+				</dl>
+				<section>
+					<h2>The <code>value</code> Attribute</h2>
+					<p>This attribute indicates that the application can access any resources in specific domain under the same-origin policy.</p>
+				</section>				
+				<section>
+					<h2>Example of Usage</h2>
+					<p>The following examples shows the usage of the <code>apptype</code> and <code>appdomain</code></p>
+					<pre class="example">&lt;widget xmlns="http://www.w3.org/ns/widgets"&gt;<br>&emsp;&emsp;<strong>&lt;apptype type="activated" offline="false"/&gt;<br>&emsp;&emsp;&lt;appdomain value="www.tta.or.kr"/&gt;</strong><br>&lt;/widget&gt;</pre>
+				</section>
+			</section>
+		</section>
+		<section>
+			<h2>W3C profile for Smart TV</h2>
+			<p>
+			This specification supports application execution based on W3C web environments. 
+			However, considering Smart TV device's features like screen resolution and input method, some W3C specifications are not suitable to TV environment, so we need to make W3C profile for TV.
+			To do this, this specification defines W3C profile based on [[OIPFTVPROFILE]]
+			</p>
+			<p>
+			[[OIPFTVPROFILE]] shows a profile definition of HTML, CSS and other related web technologies aimed to TV services and devices. 
+			Its goal is to describe a common profile that can be relied on by content and service providers and implemented by manufacturers.
+			</p>
+			<p>
+			Additionally, this specification profiles the following definitions.
+			</p> 
+			<ul>
+				<li>Virtual KeyCode Definition : It does not follow the "Virtual KeyCode Constants" of [[OIPFTVPROFILE]] 6.2</li>
+				<li>Geolocation API supported</li>
+				<li>Media APIs profile for handling broadcasting video</li>
+			</ul>			
+		</section>
+		<section>
+			<h2>Protocol and Contents Formats</h2>
+			<p>
+			This specification defines protocols and contents formats exactly to be supported by Smart TV device like below.
+			</p>
+			<section>
+				<h2>Protocols for application delivery and download</h2>
+				<ul>
+					<li>HTTP 1.0/1.1</li>
+					<li>HTTPS (HTTP over TLS)</li>
+				</ul>				
+			</section>
+			<section>
+				<h2>Protocols for streaming video</h2>
+				<ul>
+					<li>HTTP 1.1</li>
+					<li>RTSP</li>
+					<li>Adaptive streaming profile based on MPEG-DASH</li>
+				</ul>				
+			</section>
+			<section>
+				<h2>Graphic Format</h2>
+				<table class="simple">
+				<thead>
+					<tr><th>Image Format</th><th>MIME Type</th></tr>
+				</thead>
+				<tbody>
+					<tr><td>JPEG</td><td>image/jpeg</td></tr>
+					<tr><td>GIF</td><td>image/gif</td></tr>
+					<tr><td>PNG</td><td>image/png</td></tr>
+				</tbody>
+				</table>
+			</section>			
+			<section>
+				<h2>Broadband Video Contents Format</h2>
+				<table class="simple">
+				<thead>
+					<tr><th>System Format</th><th>Video Format</th><th>Audio Format</th><th>MIME Type</th></tr>
+				</thead>
+				<tbody>
+					<tr><td>TS</td><td>H.264</td><td>MPEG-2 AAC,<br>AC3</td><td>video/mpeg</td></tr>
+					<tr><td>MP4</td><td>H.264</td><td>MPEG-2 AAC,<br>MPEG-4 HE AAC,<br> AC3</td><td>video/mp4</td></tr>
+				</tbody>
+				</table>
+			</section>			
+			<section>
+				<h2>Broadband Audio Contents Format</h2>
+				<table class="simple">
+				<thead>
+					<tr><th>Audio Format</th><th>MIME Type</th></tr>
+				</thead>
+				<tbody>
+					<tr><td>MPEG1_L3</td><td>audio/mpeg</td></tr>
+					<tr><td>HE AAC</td><td>audio/mp4</td></tr>
+				</tbody>
+				</table>
+			</section>			
+		</section>
+		<section>
+			<h2>Receiver Minimum Requirements</h2>
+			<p>
+			To be complied with this specification, Smart TV device shall meet the following minimum requirements.
+			</p>
+			<table class="simple">
+			<thead>
+				<tr><th>Requirement</th><th>Description</th></tr>
+			</thead>
+			<tbody>
+				<tr><td><code>Screen Resolution</code></td><td>960 X 540(at least), 1280 X 720(recommended)</td></tr>
+				<tr><td><code>Application Transparency</code></td><td>TV devices supported transparency completely. It shall make user not to know the difference between original broadcasting video and the same video behind the transparency application.</td></tr>
+				<tr><td><code>Color Format for Graphic Plane</code></td><td>RGBA16(at least), RGBA32(recommended)</td></tr>
+				<tr><td><code>Text Input Method</code></td><td>TV device shall have the method for text input like IME or virtual keyboard.(specific method is not defined)</td></tr>
+				<tr><td><code>Video scaling</code></td><td>Arbitrary video scaling shall be supported between 1/4 X 1/4 and 2 X 2. The recommended minimum size is 1/8 X 1/8.</td></tr>
+				<tr><td><code>Video aspect ratio</code></td><td>The original aspect ratio of decoded video shall be preserved when the video is scaled.</td></tr>
+				<tr><td><code>Font</code></td><td>This specification does not define the default font. The device shall support web download font.</td></tr>
+				<tr><td><code>Runtime memory</code></td><td>The minimum runtime memory supported by device is 30MBytes.</td></tr>
+				<tr><td><code>Input Device</code></td>
+				<td>The receiver shall support the remote controller by default. 
+				When the button on remote controller is pressed, the device shall occur key event using virtual key code defined in this specification.(ex.VK_RED, VK_UP, VK_ENTER, VK_9 and so on)
+				<br>And the pointing device like mouse is recommended.</td></tr>
+			</tbody>
+			</table>
+		</section>
+		<section>
+			<h2>Receiver Profiles</h2>
+			<p>
+			This specification defines profile about itself considering the device's main services based on device capabilities, broadcasting environments, business model and so on.
+			The profile includes implementation coverage and the specific restrictions for this specification. the profile definition is like below.
+			</p>
+			<table class="simple">
+			<thead>
+				<tr><th>Profile</th><th>Description</th></tr>
+			</thead>
+			<tbody>
+				<tr><td><code>Full Profile</code></td><td>The receiver of this profile supports all requirements of this specification.</td></tr>
+				<tr><td><code>Broadcast Related Profile</code></td><td>The receiver of this profile just support the requirements for the application launched by broadcasting signal. 
+				<br>So, pakcage application is excluded in this profile.</td></tr>
+				<tr><td><code>Basic Package Profile</code></td><td>The receiver of this profile just support the limited package application. The package application with broadcast activated feature is not included this profile.
+				<br>And the signal application launched by broadcastor is also excluded in this profile.</td></tr>
+				<tr><td><code>Advanced Package Profile</code></td><td>The receiver of this profile supports the full package application.
+				<br>However, the signal application launched by broadcastor is excluded in this profile.</td></tr>
+			</tbody>
+			</table>			
+		</section>
+	</section>   
+    <section id="conformance">
+    </section>    
+    <section>
+		<h2>Window Interface</h2>
+			<dl title="partial interface Window" class="idl">
+			<dt>readonly attribute SmartTVExt tv</dt>
+			<dd>
+				MUST return the object that exposes the Smart TV Extended APIs. Entry object to access Extended APIs
+			</dd>
+		</dl>
+    </section>
+    <section>
+		<h2>SmartTVExt Interface</h2>
+		<dl title="interface SmartTVExt" class="idl">
+			<dt>readonly attribute ApplicationExt application</dt>
+			<dd>
+			MUST return the object having application related APIs
+			</dd>
+			<dt>readonly attribute BroadcastExt broadcast</dt>
+			<dd>
+			MUST return the object having broadcast related APIs
+			</dd>
+			<dt>readonly attribute DeviceExt device</dt>
+			<dd>
+			MUST return the object having SmartTV device related APIs
+			</dd>
+			<dt>readonly attribute MultiscreenExt multiscreen</dt>
+			<dd>
+			MUST return the object having multiscreen service related APIs
+			</dd>
+			<dt>readonly attribute DrmExt drm</dt>
+			<dd>
+			MUST return the object having drm agent related APIs
+			</dd>
+		</dl>
+    </section>    
+    <section>
+		<h2>ApplicationExt Interface</h2>
+		<dl title="interface ApplicationExt" class="idl">
+			<dt>readonly attribute ApplicationManager appmgr</dt>
+			<dd>
+			MUST return the object having APIs to control the current running application
+			</dd>
+			<dt>readonly attribute StoreAppInfo storeApp</dt>
+			<dd>
+			MUST return the object having APIs to get information about currently installed store application on the device.
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>BroadcastExt Interface</h2>
+		<dl title="interface BroadcastExt" class="idl">
+			<dt>readonly attribute ChannelManager channelManager</dt>
+			<dd>
+			MUST return the object having APIs to get information about Smart TV channel.
+			</dd>
+			<dt>readonly attribute ChannelMetadata channelMetadata</dt>
+			<dd>
+			MUST return the object having APIs to get information about Smart TV channel-list and programs.
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>DeviceExt Interface</h2>
+		<dl title="interface DeviceExt" class="idl">
+			<dt>readonly attribute DeviceStatus status</dt>
+			<dd>
+			MUST return the object having APIs to get information about Smart TV device's status like network or capability.
+			</dd>
+			<dt>readonly attribute DeviceInfo info</dt>
+			<dd>
+			MUST return the object having APIs to get Smart TV specific information like version or manufacturer.
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>MultiscreenExt Interface</h2>
+		<dl title="interface MultiscreenExt" class="idl">
+			<dt>readonly attribute MScreenConnect connect</dt>
+			<dd>
+			MUST return the object having APIs related to the connection between Smart TV and the companion devices.
+			</dd>
+			<dt>readonly attribute MScreenService service</dt>
+			<dd>
+			MUST return the object having APIs related to multiscreen services.
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>DrmExt Interface</h2>
+		<dl title="interface DrmExt" class="idl">
+			<dt>readonly attribute DrmAgent agent</dt>
+			<dd>
+			MUST return the object having APIs to communicate with the DRM agent of Smart TV.
+			</dd>
+			<dt>readonly attribute DrmAVObject avObject</dt>
+			<dd>
+			MUST return the object having APIs related to object playing drm-protected contents actually.
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>ApplicationManager Interface</h2>
+		<p>ApplicationManager interface defines APIs to control the current running application or application's lifecycle.</p>
+		<dl title="interface ApplicationManager" class="idl">
+			<dt>const unsigned short KEY_RED = 0x1</dt><dd>Red color key on remote controller.</dd>
+			<dt>const unsigned short KEY_GREEN = 0x2</dt><dd>Green color key on remote controller.</dd>
+			<dt>const unsigned short KEY_YELLOW = 0x4</dt><dd>Yellow color key on remote controller.</dd>
+			<dt>const unsigned short KEY_BLUE = 0x8</dt><dd>Blue color key on remote controller.</dd>
+			<dt>const unsigned short KEY_NAVIGATION = 0x10</dt><dd>Navigation keys on remote controller like arrows and enter.</dd>
+			<dt>const unsigned short KEY_VCR = 0x20</dt><dd>Play control keys like play, pause, stop and trick play.</dd>
+			<dt>const unsigned short KEY_CHANNEL = 0x40</dt><dd>Channel keys like channel Up/Down.</dd>
+			<dt>const unsigned short KEY_INFO = 0x80</dt><dd>Info key on remote controller.</dd>
+			<dt>const unsigned short KEY_MENU = 0x100</dt><dd>Menu key on remote controller.</dd>
+			<dt>const unsigned short KEY_NUMERIC = 0x200</dt><dd>Numeric keys on remote controller.</dd>
+			<dt>const unsigned short KEY_CHAR = 0x400</dt><dd>Character keys on remote controller.</dd>
+			<dt>const unsigned short KEY_OTHER = 0x800</dt><dd>Other Keys they are not defined in this interface.</dd>
+			<dt>const unsigned short ACCESS_BVIDEO = 0x1</dt><dd>Permission for access to broadcasting video.</dd>
+			<dt>const unsigned short ACCESS_CHANNEL = 0x2</dt><dd>Permission for access to chananel information.</dd>
+			<dt>const unsigned short ACCESS_PROGRAM = 0x4</dt><dd>Permission for access to prograrm information.</dd>
+			<dt>const unsigned short ACCESS_FILEREAD = 0x10</dt><dd>Permission for access to device file system to read data.</dd>
+			<dt>const unsigned short ACCESS_DEVICESTATUS = 0x20</dt><dd>Permission for access to device specific information.</dd>
+			<dt>const unsigned short ACCESS_DEVICEINFO = 0x40</dt><dd>Permission for access to device status information.</dd>
+			<dt>const unsigned short ACCESS_GEOLOCATION = 0x80</dt><dd>Permission for access to geolocation information</dd>
+			<dt>const unsigned short ACCESS_MULTISCREEN = 0x100</dt><dd>Permission for access to multiscreen feature</dd>
+			<dt>const unsigned short ACCESS_DRM = 0x200</dt><dd>Permission for access to drm feature</dd>
+
+			<dt>readonly attribute boolean visible</dt>
+			<dd>
+			This attribute indicates that the application is visible or not on Smart TV device screen.
+			</dd>
+			<dt>readonly attribute unsigned short keySetValue</dt>
+			<dd>
+			This attribute indicates the set of key values that can be used by the application.
+			</dd>
+			<dt>readonly attribute unsigned short permission</dt>
+			<dd>
+			This attribute indicates the permission of application to access Smart TV resources.
+			</dd>
+			<dt>void setKeySet(unsigned short keys)</dt>
+			<dd>
+			This method is called to change the current key set values of application.
+			<dl class='parameters'>
+				<dt>unsigned short keys</dt>
+				<dd>
+					key set values : Bit OR operation for key value constants
+				</dd>
+			</dl>				
+			</dd>
+			<dt>void showApplication()</dt>
+			<dd>
+			This method is called to make the application visible
+			</dd>		
+			<dt>void hideApplication()</dt>
+			<dd>
+			This method is called to make the application invisible
+			</dd>		
+			<dt>void createApplication(DOMString appURL)</dt>
+			<dd>
+			This method is called to launch new application indicating by appURL instead of the current running application.
+			<dl class='parameters'>
+				<dt>DOMString appURL</dt>
+				<dd>
+					The following types URL can be possible as this parameter.
+					<ul>
+					<li>Broadband Application : HTTP/HTTPS URL</li>
+					<li>AIT Application : tvapp://ait.organization_id.application_id </li>
+					<li>Store Application : tvapp://store.organization_id.application_id </li>
+					</ul>
+				</dd>
+			</dl>			
+			</dd>		
+			<dt>void destroyApplication()</dt>
+			<dd>
+			This method is called to stop the current running application.
+			</dd>		
+			<dt>unsigned short requestPermission(unsigned short access)</dt>
+			<dd>
+			This method is called to request permission to access Smart TV resources.
+			<dl class='parameters'>
+				<dt>unsigned short access</dt>
+				<dd>
+					access values : Bit OR operation for access constants
+				</dd>
+			</dl>			
+			</dd>		
+			<dt>void getFreeMemory()</dt>
+			<dd>
+			This method is called to get information about the available memory amount on the device. 
+			</dd>		
+		</dl>
+	</section>
+    <section>
+		<h2>StoreAppInfo Interface</h2>
+		<p>StoreAppInfo Interface defines the APIs to get information about store applications they was downloaded and installed through App Store. </p>
+		<dl title="interface StoreAppInfo" class="idl">
+			<dt>StoreAppList getStoreApps(optional DOMString filter)</dt>
+			<dd>
+			This method is called to get store application list.
+			<dl class='parameters'>
+				<dt>optional DOMString filter</dt>
+				<dd>
+					filter can be used as manufacturer specific purpose to filter application list.
+				</dd>
+			</dl>			
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>StoreAppList Interface</h2>
+		<p>StoreAppList Interface defines the list-typed data structure to save the store application information</p>
+		<dl title="interface StoreAppList" class="idl">
+			<dt>readonly attribute unsigned long length</dt>
+			<dd>
+			This attribute indicates the length of the listed items.
+			</dd>
+			<dt>StoreApp item(unsigned long index)</dt>
+			<dd>
+			This method is called to get one store application information indicated by index parameter.
+			<dl class='parameters'>
+				<dt>unsigned long index</dt>
+				<dd>
+					index value in the list-typed data structure
+				</dd>
+			</dl>			
+			</dd>
+		</dl>
+	</section>		
+    <section>
+		<h2>StoreApp Interface</h2>
+		<p>StoreApp Interface defines the detailed information for one store application.</p>
+		<dl title="interface StoreApp" class="idl">
+			<dt>readonly attribute DOMString appID</dt>
+			<dd>
+			This attribute indicates the application's id.
+			</dd>
+			<dt>readonly attribute DOMString appName</dt>
+			<dd>
+			This attribute indicates the application's name.
+			</dd>
+			<dt>readonly attribute DOMString appDesc</dt>
+			<dd>
+			This attribute indicates the application's description.
+			</dd>
+			<dt>readonly attribute DOMString appVer</dt>
+			<dd>
+			This attribute indicates the application's version.
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>ChannelManager Interface</h2>
+		<p>ChannelManager Interface defines APIs to get the information about specific channel.</p>
+		<dl title="interface ChannelManager : EventTarget" class="idl">
+			<dt>Channel getCurrentChannel()</dt>
+			<dd>
+			This method is called to get the current channel information.
+			</dd>
+			<dt>Channel getNextChannel()</dt>
+			<dd>
+			This method is called to get the next channel information in the channel list(map) of Smart TV.
+			</dd>
+			<dt>Channel getPrevChannel()</dt>
+			<dd>
+			<p>This method is called to get the previous channel information in the channel list(map) of Smart TV.</p>
+			</dd>
+			<dt class="no-docs">
+				attribute EventHandler onChannelChanged
+			</dt>
+			<dd>
+				Handles the <code>onChannelChanged</code> event of type ChannelChanged, fired when Smart TV's channel is changed by API call or remote controller.
+			</dd>
+			<dt class="no-docs">
+				attribute EventHandler onProgramChanged
+			</dt>
+			<dd>
+				Handles the <code>onProgramChanged</code> event of type ProgramChanged, fired when the broadcasting program is changed.
+			</dd>
+		</dl>
+		<p>In this specification, the channel change operation can be done by HTML5 &lt;video&gt; element like below</p>
+		<pre class="example highlight">
+			var video = document.querySelector('video');
+			var chMgr = tvExt.broadcast.channelManager;
+			video.src = chMgr.getCurrentChannel().sourceURI; // current channel is binding to HTML5 video element
+			
+			video.src = chMgr.getNextChannel().sourceURI; // channel changed to next channel
+		</pre>
+		<section>
+			<h2>Event handlers</h2>
+			<p>The following are the event handlers that shall be supported as attributes by the ChannelManager interface.
+			<table class="simple">
+				<thead>
+					<tr>
+						<th>Event handler</th>
+						<th>Event type</th>
+						<th>DOM2 event attributes</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><strong><code>onChannelChanged</code></strong></td>
+						<td><code>ChannelChanged</code></td>
+						<td><ul><li>Bubbles : No</li><li>Cancellable : No</li><li>Context Info : channel</li></ul></td>
+					</tr>
+					<tr>
+						<td><strong><code>onProgramChanged</code></strong></td>
+						<td><code>ProgramChanged</code></td>
+						<td><ul><li>Bubbles : No</li><li>Cancellable : No</li><li>Context Info : program</li></ul></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>		
+	</section>
+    <section>
+		<h2>ChannelMetadata Interface</h2>
+		<p>ChannelMetadata Interface defines the APIs to access broadcasting program information.</p>
+		<dl title="interface ChannelMetadata" class="idl">
+			<dt>const unsigned short SORT_CHANNELS_SYSTEM_DEFAULT = 0</dt><dd>Channel sorting criteria by system default.</dd>
+			<dt>const unsigned short SORT_CHANNELS_NUMBER_ASCENDING = 1</dt><dd>Channel sorting criteria by number ascending.</dd>
+			<dt>const unsigned short SORT_CHANNELS_NUMBER_DESCENDING = 2</dt><dd>Channel sorting criteria by number descending.</dd>
+			<dt>const unsigned short SORT_CHANNELS_NAME_ASCENDING = 3</dt><dd>Channel sorting criteria by channel name ascending.</dd>
+			<dt>const unsigned short SORT_CHANNELS_NAME_DESCENDING = 4</dt><dd>Channel sorting criteria by channel name descending.</dd>
+			<dt>const unsigned short SORT_CHANNELS_MOST_VIEW_FIRST = 5</dt><dd>Channel sorting criteria by most viewed channel first.</dd>
+			<dt>const unsigned short SORT_CHANNELS_USER_DEFINED = 6</dt><dd>Channel sorting criteria by user definition.</dd>
+			<dt>const unsigned short SORT_PROGRAM_SYSTEM_DEFAULT = 0</dt><dd>Program sorting criteria by system default.</dd>
+			<dt>const unsigned short SORT_PROGRAM_NUMBER_ASCENDING = 1</dt><dd>Program sorting criteria by number ascending.</dd>
+			<dt>const unsigned short SORT_PROGRAM_NUMBER_DESCENDING = 2</dt><dd>Program sorting criteria by number descending.</dd>
+			<dt>const unsigned short SORT_PROGRAM_NAME_ASCENDING = 3</dt><dd>Program sorting criteria by program name ascending.</dd>
+			<dt>const unsigned short SORT_PROGRAM_NAME_DESCENDING = 4</dt><dd>Program sorting criteria by program name descending.</dd>
+			<dt>const unsigned short SORT_PROGRAM_USER_DEFINED = 5</dt><dd>Program sorting criteria by user definition.</dd>
+			
+			<dt>ChannelList getChannels(unsigned short sort, optional DOMString filter)</dt>
+			<dd>
+			This method is called to get the channel list information on the Smart TV device.
+			<dl class='parameters'>
+				<dt>unsigned short sort</dt>
+				<dd>
+					sorting criteria for the resulted channel list
+				</dd>
+				<dt>optional DOMString filter</dt>
+				<dd>
+					filter option for the resulted channel list defined by manufacturer
+				</dd>
+			</dl>			
+			</dd>
+			<dt>ProgramList getProgramsInChannel(Channel channel, unsigned short sort, optional DOMString filter)</dt>
+			<dd>
+			This method is called to get program information for the specific channel.
+			<dl class='parameters'>
+				<dt>Channel channel</dt>
+				<dd>
+					the specific channel to get program information from. 
+				</dd>
+				<dt>unsigned short sort</dt>
+				<dd>
+					sorting criteria for the resulted program list
+				</dd>
+				<dt>optional DOMString filter</dt>
+				<dd>
+					filter option for the resulted program list defined by manufacturer
+				</dd>
+			</dl>			
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>ChannelList Interface</h2>
+		<p>ChannelList Interface defines the list-typed data structure to save the channel information</p>
+		<dl title="interface ChannelList" class="idl">
+			<dt>readonly attribute unsigned long length</dt>
+			<dd>
+			This attribute indicates the length of the listed items.
+			</dd>
+			<dt>Channel item(unsigned long index)</dt>
+			<dd>
+			This method is called to get one channel information indicated by index parameter.
+			<dl class='parameters'>
+				<dt>unsigned long index</dt>
+				<dd>
+					index value in the list-typed data structure
+				</dd>
+			</dl>			
+			</dd>
+		</dl>
+	</section>		
+    <section>
+		<h2>ProgramList Interface</h2>
+		<p>ProgramList Interface defines the list-typed data structure to save the program information</p>
+		<dl title="interface ProgramList" class="idl">
+			<dt>readonly attribute unsigned long length</dt>
+			<dd>
+			This attribute indicates the length of the listed items.
+			</dd>
+			<dt>Program item(unsigned long index)</dt>
+			<dd>
+			This method is called to get one program information indicated by index parameter.
+			<dl class='parameters'>
+				<dt>unsigned long index</dt>
+				<dd>
+					index value in the list-typed data structure
+				</dd>
+			</dl>			
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>Channel Interface</h2>
+		<p>Channel Interface defines the channel's detail information.</p>
+		<dl title="interface Channel" class="idl">
+			<dt>const unsigned short DELIVERY_TYPE_UNKNOWN = 0</dt><dd>Unknown type of channel delivery system</dd>
+			<dt>const unsigned short DELIVERY_TYPE_TERRESTRIAL = 1</dt><dd>Terrestrial type of channel delivery system</dd>
+			<dt>const unsigned short DELIVERY_TYPE_CABLE = 2</dt><dd>Cable type of channel delivery system</dd>
+			<dt>const unsigned short DELIVERY_TYPE_SATELLITE = 3</dt><dd>Satellite type of channel delivery system</dd>
+			<dt>const unsigned short DELIVERY_TYPE_IP = 4</dt><dd>IP type of channel delivery system</dd>
+			<dt>const unsigned short DELIVERY_TYPE_OTHER = 5</dt><dd>Other type of channel delivery system</dd>
+			<dt>const unsigned short CHANNEL_TYPE_UNKNOWN = 0</dt><dd>Unknown channel type</dd>
+			<dt>const unsigned short CHANNEL_TYPE_TV = 0</dt><dd>TV channel type</dd>
+			<dt>const unsigned short CHANNEL_TYPE_RADIO = 0</dt><dd>Radio channel type</dd>
+			<dt>const unsigned short CHANNEL_TYPE_OTHER = 0</dt><dd>Other channel type</dd>
+			<dt>readonly attribute DOMString name</dt>
+			<dd>
+			This attribute indicates channel's name.
+			</dd>
+			<dt>readonly attribute DOMString number</dt>
+			<dd>
+			This attribute indicates channel's number.
+			</dd>
+			<dt>readonly attribute DOMString type</dt>
+			<dd>
+			This attribute indicates channel's type.
+			</dd>
+			<dt>readonly attribute DOMString deliveryType</dt>
+			<dd>
+			This attribute indicates channel's delivery type..
+			</dd>
+			<dt>readonly attribute DOMString sourceURI</dt>
+			<dd>
+			This attribute indicates channel's sourceURI. This value is defined by Smart TV platform and it shall be unique on device's channel list.
+			The value is used for channel binding with HTML5 &lt;video&gt; element and channel change operation.
+			</dd>
+			<dt>DOMString getAttribute(DOMString attributeName)</dt>
+			<dd>
+			This method is called to get any channel's attribute that is not defined in this specification. 
+			<dl class='parameters'>
+				<dt>DOMString attributeName</dt>
+				<dd>
+					Attribute name defined by parameter can be decided by manufacture.
+				</dd>
+			</dl>			
+		</dl>
+	</section>		
+    <section>
+		<h2>Program Interface</h2>
+		<p>Program Interface defines the broadcasting program's detail information.</p>
+		<dl title="interface Program" class="idl">
+			<dt>readonly attribute DOMString name</dt>
+			<dd>
+			This attribute indicates the program's name.
+			</dd>
+			<dt>readonly attribute DOMString longName</dt>
+			<dd>
+			This attribute indicates the program's long name.
+			</dd>
+			<dt>readonly attribute DOMString description</dt>
+			<dd>
+			This attribute indicates the program's description.
+			</dd>
+			<dt>readonly attribute unsigned long startTime</dt>
+			<dd>
+			This attribute indicates the start time of program.
+			</dd>
+			<dt>readonly attribute unsigned long duration</dt>
+			<dd>
+			This attribute indicates the duration of program.
+			</dd>
+			<dt>readonly attribute AudioInfo[] audioInfoArray</dt>
+			<dd>
+			This attribute indicates the information for the element audios in the program.
+			</dd>
+			<dt>readonly attribute VideoInfo videoInfo</dt>
+			<dd>
+			This attribute indicates the information for the element video in the program.
+			</dd>
+			<dt>readonly attribute CaptionInfo[] captionInfoArray</dt>
+			<dd>
+			This attribute indicates the caption information in the program.
+			</dd>
+			<dt>readonly attribute Channel channel</dt>
+			<dd>
+			This attribute indicates the channel information that the prograrm is included.
+			</dd>
+			<dt>DOMString getAttribute(DOMString attributeName)</dt>
+			<dd>
+			This method is called to get any program's attribute that is not defined in this specification. 
+			<dl class='parameters'>
+				<dt>DOMString attributeName</dt>
+				<dd>
+					Attribute name defined by parameter can be decided by manufacture.
+				</dd>
+			</dl>			
+		</dl>
+	</section>
+    <section>
+		<h2>AudioInfo Interface</h2>
+		<p>AudioInfo Interface defines the detail information for the element audio in the specific program.</p>
+		<dl title="interface AudioInfo" class="idl">
+			<dt>const unsigned short AUDIO_CODING_UNKNOWN = 0</dt><dd>Unknown type of audio coding</dd>
+			<dt>const unsigned short AUDIO_CODING_AC3 = 1</dt><dd>AC3 type of audio coding</dd>
+			<dt>const unsigned short AUDIO_CODING_DTS = 2</dt><dd>DTS type of audio coding</dd>
+			<dt>const unsigned short AUDIO_CODING_MP3 = 3</dt><dd>MP3 type of audio coding</dd>
+			<dt>const unsigned short AUDIO_CODING_MPEG1 = 4</dt><dd>MPEG1 type of audio coding</dd>
+			<dt>const unsigned short AUDIO_CODING_MPEG2_LAYER_3 = 5</dt><dd>MPEG2 Layer 3 type of audio coding</dd>
+			<dt>const unsigned short AUDIO_CODING_MPEG2_LAYER_AAC = 6</dt><dd>MPEG2 Layer AAC type of audio coding</dd>
+			<dt>const unsigned short AUDIO_CODING_MPEG4 = 7</dt><dd>MPEG4 type of audio coding</dd>
+			<dt>const unsigned short AUDIO_CODING_AMR = 8</dt><dd>AMR type of audio coding</dd>
+			<dt>const unsigned short AUDIO_SERVICE_MODE_MAIN = 1</dt><dd>Audio Service Mode : Main</dd>
+			<dt>const unsigned short AUDIO_SERVICE_MODE_MUSIC_N_EFFECTS = 2</dt><dd>Audio Service Mode : Music N Effects</dd>
+			<dt>const unsigned short AUDIO_SERVICE_MODE_HEARING_IMPARED = 3</dt><dd>Audio Service Mode : Hearing Impared</dd>
+			<dt>const unsigned short AUDIO_SERVICE_MODE_VISUAL_IMPARED = 4</dt><dd>Audio Service Mode : Visual Impared</dd>
+			<dt>const unsigned short AUDIO_SERVICE_MODE_DIALOGUE = 5</dt><dd>Audio Service Mode : Dialogue</dd>
+			<dt>const unsigned short AUDIO_SERVICE_MODE_COMMENTRAY = 6</dt><dd>Audio Service Mode : Commentray</dd>
+			<dt>const unsigned short AUDIO_SERVICE_MODE_EMERGENCY = 7</dt><dd>Audio Service Mode : Emergency</dd>
+			<dt>const unsigned short AUDIO_SERVICE_MODE_VOICE_OVER = 8</dt><dd>Audio Service Mode : Voice Over</dd>
+			<dt>const unsigned short AUDIO_SERVICE_MODE_KARAOKE = 9</dt><dd>Audio Service Mode : Karaoke</dd>
+			
+			<dt>readonly attribute DOMString language</dt>
+			<dd>
+			This attribute indicates the language information for element audio.(ISO 639-2 : alpha-3 code)
+			</dd>
+			<dt>readonly attribute short coding</dt>
+			<dd>
+			This attribute indicates the encoding information for element audio.
+			</dd>
+			<dt>readonly attribute short serviceMode</dt>
+			<dd>
+			This attribute indicates the service mode for element audio.
+			</dd>
+		</dl>
+	</section>		
+    <section>
+		<h2>VideoInfo Interface</h2>
+		<p>VideoInfo Interface defines the detail information for the element video in the specific program.</p>
+		<dl title="interface VideoInfo" class="idl">
+			<dt>const unsigned short VIDEO_QUALITY_UNKNOWN = 0</dt><dd>Unknown type of video quality</dd>
+			<dt>const unsigned short VIDEO_QUALITY_LOW = 1</dt><dd>Low type of video quality</dd>
+			<dt>const unsigned short VIDEO_QUALITY_HIGH = 2</dt><dd>High type of video quality</dd>
+			<dt>const unsigned short VIDEO_CODING_UNKNOWN = 0</dt><dd>Unknown type of video coding</dd>
+			<dt>const unsigned short VIDEO_CODING_MPEG4 = 1</dt><dd>MPEG4 type of video coding</dd>
+			<dt>const unsigned short VIDEO_CODING_H264_AVC = 2</dt><dd>H.264 AVC type of video coding</dd>
+			
+			<dt>readonly attribute short quality</dt>
+			<dd>
+			This attribute indicates the quality information for element video.
+			</dd>
+			<dt>readonly attribute short coding</dt>
+			<dd>
+			This attribute indicates the encoding information for element video.
+			</dd>
+		</dl>
+	</section>		
+    <section>
+		<h2>DeviceInfo Interface</h2>
+		<p>DeviceInfo Interface defines the details about the Smart TV device's specific information.</p>
+		<dl title="interface DeviceInfo" class="idl">
+			<dt>readonly attribute DOMString manufacturer</dt>
+			<dd>
+			This attribute indicates the device's manufacturer information.
+			</dd>
+			<dt>readonly attribute DOMString model</dt>
+			<dd>
+			This attribute indicates the device's model information.
+			</dd>
+			<dt>readonly attribute DOMString verHW</dt>
+			<dd>
+			This attribute indicates the device's hareware version information.
+			</dd>
+			<dt>readonly attribute DOMString verSW</dt>
+			<dd>
+			This attribute indicates the device's software version information.
+			</dd>
+			<dt>readonly attribute DOMString verPlatform</dt>
+			<dd>
+			This attribute indicates the device's platform version information.
+			</dd>
+			<dt>readonly attribute DOMString releaseDate</dt>
+			<dd>
+			This attribute indicates the device's release date information.
+			</dd>
+		</dl>
+	</section>		
+    <section>
+		<h2>DeviceStatus Interface</h2>
+		<p>DeviceStatus Interface defines the device's status information that the application is running on.</p>
+		<dl title="interface DeviceStatus" class="idl">
+			<dt>readonly attribute NetworkInfo netInfo</dt>
+			<dd>
+			This attribute indicates the current device's network information.
+			</dd>
+			<dt>readonly attribute DOMString xmlCapabilities</dt>
+			<dd>
+			This attribute indicates the device's capability information that describes the features supported by the current device.
+			</dd>
+		</dl>
+	</section>		
+    <section>
+		<h2>NetworkInfo Interface</h2>
+		<p>NetworkInfo Interface defines the device's network information that the application is running on.</p>
+		<dl title="interface NetworkInfo" class="idl">
+			<dt>const unsigned short TYPE_ETHERNET = 0</dt><dd>Ethernet type of network connection</dd>
+			<dt>const unsigned short TYPE_IEEE802_11 = 1</dt><dd>IEEE 802.11 type of network connection</dd>
+			<dt>const unsigned short TYPE_BLUETOOTH = 2</dt><dd>Bluetooth type of network connection</dd>
+			<dt>const unsigned short TYPE_UNKNOWN = 3</dt><dd>Unknown type of network connection</dd>
+			
+			<dt>readonly attribute short netType</dt>
+			<dd>
+			This attribute indicates the type of current network connection.
+			</dd>
+			<dt>readonly attribute boolean isNetAvailable</dt>
+			<dd>
+			This attribute indicates the status of current network connection.
+			</dd>
+			<dt>readonly attribute DOMString ipAddress</dt>
+			<dd>
+			This attribute indicates the IP address of current network connection.
+			</dd>
+			<dt>readonly attribute DOMString macAddress</dt>
+			<dd>
+			This attribute indicates the MAC address of current network connection.
+			</dd>
+			<dt>readonly attribute DOMString dnsAddress</dt>
+			<dd>
+			This attribute indicates the DNS address of current network connection.
+			</dd>
+			<dt>readonly attribute DOMString gateway</dt>
+			<dd>
+			This attribute indicates the gateway address of current network connection.
+			</dd>
+			<dt>readonly attribute DOMString subnetMask</dt>
+			<dd>
+			This attribute indicates the subnet mask of current network connection.
+			</dd>
+			<dt>readonly attribute DOMString apnName</dt>
+			<dd>
+			This attribute indicates the APN name of current network connection.
+			</dd>
+		</dl>
+	</section>		
+    <section>
+		<h2>MScreenConnect Interface</h2>
+		<dl title="interface MScreenConnect" class="idl">
+			<dt>readonly attribute CommonConn common</dt>
+			<dd>
+			MUST return the object having APIs related to the common features about multiscreen connection between Smart TV and the companion devices.
+			</dd>
+		</dl>
+	</section>		
+    <section>
+		<h2>CommonConn Interface</h2>
+		<p>CommonConn Interface defines APIs related to multiscreen connection as a common feature regardless of network protocol.</p>
+		<dl title="interface CommonConn" class="idl">
+			<dt>const unsigned short OK_NO_ERR = 0x0</dt><dd>Error Code : No error.</dd>
+			<dt>const unsigned short ERR_P2P_UNSUPPORTED = 0x1</dt><dd>Error Code : P2P connection is not supported.</dd>
+			<dt>const unsigned short ERR_BUSY = 0x2</dt><dd>Error Code : Network Status is busy now.</dd>
+			<dt>const unsigned short ERR_UNKNOWN_ERROR = 0x3</dt><dd>Error Code : Unknown error is happened.</dd>
+			
+			<dt>void getDeviceInfo(optional CommDeviceCB deviceCallback)</dt>
+			<dd>
+			This method is called to get the information of companion devices they can be connected to Smart TV. 
+			<dl class='parameters'>
+				<dt>optional CommDeviceCB deviceCallback</dt>
+				<dd>
+					Callback function called by Smart TV platform to give the companion devices information to application.
+				</dd>
+			</dl>
+			<dt>void connServiceToDevice(unsigned long hDevice, unsigned short portNum, optional ConnRequestCB reqCallback)</dt>
+			<dd>
+			This method is called to request connection with specific companion device indicated by hDevice. 
+			<dl class='parameters'>
+				<dt>unsigned long hDevice</dt>
+				<dd>
+					Device handle value to indicate the companion device.
+				</dd>
+				<dt>unsigned short portNum</dt>
+				<dd>
+					Port number to websocket session connection with companion. This specification assumes that the companion has websocket's server role.
+				</dd>
+				<dt>optional ConnRequestCB reqCallback</dt>
+				<dd>
+					Callback function called by Smart TV platform to delivery the result of this function.
+				</dd>
+			</dl>
+			<dt>DOMString getIPfromHandle(unsigned long hDevice)</dt>
+			<dd>
+			This method is called to get the IP address for the specific companion device indicated by hDevice 
+			<dl class='parameters'>
+				<dt>unsigned long hDevice</dt>
+				<dd>
+					Device handle value to indicate the companion device.
+				</dd>
+			</dl>
+		</dl>
+	</section>		
+    <section>
+		<h2>CommonDeviceCB Interface</h2>
+		<dl title="callback interface CommonDeviceCB" class="idl">
+			<dt>void onDevicesAvailable(CommDeviceList devices)</dt>
+			<dd>
+			This method is called back by Smart TV platform to give companion devices information.
+			<dl class='parameters'>
+				<dt>CommDeviceList devices</dt>
+				<dd>
+					Companion Devices List
+				</dd>
+			</dl>			
+			</dd>
+		</dl>
+	</section>		
+    <section>
+		<h2>ConnRequestCB Interface</h2>
+		<dl title="callback interface ConnRequestCB" class="idl">
+			<dt>void onConnRequestCallback(unsigned short code)</dt>
+			<dd>
+			This method is called back by Smart TV platform to give the result about the connServiceToDevice function call.
+			<dl class='parameters'>
+				<dt>unsigned short code</dt>
+				<dd>
+					Result code or Error code if possible
+				</dd>
+			</dl>			
+			</dd>
+		</dl>
+	</section>		
+    <section>
+		<h2>CommDeviceList Interface</h2>
+		<p>CommDeviceList Interface defines the list-typed data structure to save the companion devices information</p>
+		<dl title="interface CommDeviceList" class="idl">
+			<dt>readonly attribute unsigned long length</dt>
+			<dd>
+			This attribute indicates the length of the listed items.
+			</dd>
+			<dt>CommDevice item(unsigned long index)</dt>
+			<dd>
+			This method is called to get one companion device information indicated by index parameter.
+			<dl class='parameters'>
+				<dt>unsigned long index</dt>
+				<dd>
+					index value in the list-typed data structure
+				</dd>
+			</dl>			
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>CommDevice Interface</h2>
+		<p>CommDevice Interface defines the detail information for one companion device.</p>
+		<dl title="interface CommDevice" class="idl">
+			<dt>const unsigned short DEVICE_STATUS_AVAILABLE = 0</dt><dd>Device Status : It can be connected.</dd>
+			<dt>const unsigned short DEVICE_STATUS_CONNECTED = 1</dt><dd>Device Status : It's already connected.</dd>
+			<dt>const unsigned short DEVICE_STATUS_FAILED = 2</dt><dd>Device Status : It has error.</dd>
+			<dt>const unsigned short DEVICE_STATUS_AVAILABLE = 4</dt><dd>Device Status : Device configuration is needed for connection.</dd>
+			
+			<dt>const unsigned short NET_TYPE_WIFIDIRECT = 10</dt><dd>Network Type : wifidirect</dd>
+			<dt>const unsigned short NET_TYPE_UPNP = 20</dt><dd>Network Type : UPnP</dd>
+			<dt>const unsigned short NET_TYPE_MDNS = 30</dt><dd>Network Type : mDNS</dd>
+			<dt>const unsigned short NET_TYPE_ETC = 40</dt><dd>Network Type : Others</dd>
+			
+			<dt>readonly attribute unsigned long hDevice</dt>
+			<dd>
+			This attribute indicates the device handle value to identify any companion device uniquely 
+			</dd>
+			<dt>readonly attribute unsigned short status</dt>
+			<dd>
+			This attribute indicates the device status about network connection.
+			</dd>
+			<dt>readonly attribute unsigned short netType</dt>
+			<dd>
+			This attribute indicates the network type for device connection.
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>MScreenService Interface</h2>
+		<dl title="interface MScreenService" class="idl">
+			<dt>readonly attribute CommonSrvc common</dt>
+			<dd>
+			MUST return the object having APIs related to the common features about multiscreen service between Smart TV and the companion devices.
+			</dd>
+		</dl>
+	</section>
+    <section>
+		<h2>CommonSrvc Interface</h2>
+		<dl title="interface CommonSrvc : EventTarget" class="idl">
+			<dt>void sendMsgToDevice(unsigned long hDevice, DOMString message)</dt>
+			<dd>
+			This method is called to delivery message to the companion device that is connected currently.
+			<dl class='parameters'>
+				<dt>unsigned long hDevice</dt>
+				<dd>
+					device handle value to indicate the companion device
+				</dd>
+				<dt>DOMString message</dt>
+				<dd>
+					message string to delivery to companion device
+				</dd>
+			</dl>			
+			</dd>
+			<dt class="no-docs">
+				attribute EventHandler onReceivedMsgFromDevice
+			</dt>
+			<dd>
+				Handles the <code>onReceivedMsgFromDevice</code> event of type ReceivedMsgFromDevice, fired when received message from companion device.
+			</dd>
+		</dl>
+		<section>
+			<h2>Event handlers</h2>
+			<p>The following are the event handlers that shall be supported as attributes by the CommonSrvc interface.
+			<table class="simple">
+				<thead>
+					<tr>
+						<th>Event handler</th>
+						<th>Event type</th>
+						<th>DOM2 event attributes</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><strong><code>onReceivedMsgFromDevice</code></strong></td>
+						<td><code>ReceivedMsgFromDevice</code></td>
+						<td><ul><li>Bubbles : No</li><li>Cancellable : No</li><li>Context Info : hDevice, message</li></ul></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>		
+	</section>		
+    <section>
+		<h2>DrmAgent Interface</h2>
+		<p> The DRM interfaces in this specification are based on [[!CEA-2014B]] </p>
+		<dl title="interface DrmAgent : EventTarget" class="idl">
+			<dt>DOMString sendDRMMessage(DOMString msgType, DOMString msg, DOMString DRMSystemID)</dt>
+			<dd>
+			This method is called to delivery message to the DRM agent. DRM agent means the software module to descramble DRM protected contents.
+			<dl class='parameters'>
+				<dt>DOMString msgType</dt>
+				<dd>
+					the type of DRM message
+				</dd>
+				<dt>DOMString msg</dt>
+				<dd>
+					DRM message string
+				</dd>
+				<dt>DOMString DRMSystemID</dt>
+				<dd>
+					ID to indicate DRM system for descrambling
+				</dd>
+			</dl>			
+			</dd>
+			<dt class="no-docs">
+				attribute EventHandler onDRMMessageResult
+			</dt>
+			<dd>
+				Handles the <code>onDRMMessageResult</code> event of type DRMMessageResult, fired when received message from DRM agent.
+			</dd>
+		</dl>
+		<section>
+			<h2>Event handlers</h2>
+			<p>The following are the event handlers that shall be supported as attributes by the DrmAgent interface.
+			<table class="simple">
+				<thead>
+					<tr>
+						<th>Event handler</th>
+						<th>Event type</th>
+						<th>DOM2 event attributes</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><strong><code>onDRMMessageResult</code></strong></td>
+						<td><code>DRMMessageResult</code></td>
+						<td><ul><li>Bubbles : No</li><li>Cancellable : No</li><li>Context Info : msgID, resultMsg, resultCode</li></ul></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>		
+	</section>		
+    <section>
+		<h2>DrmAVObject Interface</h2>
+		<p> This interface is defined to handle DRM-related information of object playing DRM-protected contents. 
+		Even if the play itself uses HTML5MediaElement, the application can handle DRM-related APIs without any extension of HTML5MediaElement.</p>
+		<dl title="interface DrmAgent : EventTarget" class="idl">
+			<dt>DOMString DRMSystemID(HTMLMediaElement object)</dt>
+			<dd>
+			This method is called to get the ID value of DRM system that is adapt to HTML5 object indicated by parameter.
+			<dl class='parameters'>
+				<dt>HTMLMediaElement object</dt>
+				<dd>
+					the object instance that is playing DRM protected contents currently.
+				</dd>
+			</dl>			
+			</dd>
+			<dt class="no-docs">
+				attribute EventHandler onDRMRightError
+			</dt>
+			<dd>
+				Handles the <code>onDRMRightError</code> event of type DRMRightError, fired when received error message from DRM agent during the play.
+			</dd>
+		</dl>
+		<section>
+			<h2>Event handlers</h2>
+			<p>The following are the event handlers that shall be supported as attributes by the DrmAVObject interface.
+			<table class="simple">
+				<thead>
+					<tr>
+						<th>Event handler</th>
+						<th>Event type</th>
+						<th>DOM2 event attributes</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><strong><code>onDRMRightError</code></strong></td>
+						<td><code>DRMRightError</code></td>
+						<td><ul><li>Bubbles : No</li><li>Cancellable : No</li><li>Context Info : errorState, contentID, DRMSystemID, rightIssuerURL, object</li></ul></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>		
+	</section>		
+</body>
+</html>
