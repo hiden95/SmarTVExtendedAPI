@@ -147,7 +147,7 @@ var respecConfig = {
 					<tr><th>Execution</th><th>Packaging</th><th>Broadcasting</th><th>Channel</th></tr>
 				</thead>
 				<tbody>
-					<tr><td><code>store app</code></td><td><code>package app</code></td><td>According to <code>apptype</code> attribute</td><td><code>channel bound</code></td></tr>
+					<tr><td><code>store app</code></td><td><code>package app</code></td><td>According to <code>apptype</code> attribute</td><td><code>channel unbound</code></td></tr>
 					<tr><td><code>signal app</code></td><td><code>non-package app</code></td><td><code>broadcast activated app</code></td><td>According to <code>service_bound_flag</code></td></tr>
 					<tr><td><code>broadband app</code></td><td><code>non-package app</code></td><td><code>broadcast inactivated app</code></td><td>N/A</td></tr>
 				</tbody>
@@ -1139,7 +1139,7 @@ var respecConfig = {
 			<dt>const unsigned short DEVICE_STATUS_AVAILABLE = 0</dt><dd>Device Status : It can be connected.</dd>
 			<dt>const unsigned short DEVICE_STATUS_CONNECTED = 1</dt><dd>Device Status : It's already connected.</dd>
 			<dt>const unsigned short DEVICE_STATUS_FAILED = 2</dt><dd>Device Status : It has error.</dd>
-			<dt>const unsigned short DEVICE_STATUS_AVAILABLE = 4</dt><dd>Device Status : Device configuration is needed for connection.</dd>
+			<dt>const unsigned short DEVICE_STATUS_UNAVAILABLE = 4</dt><dd>Device Status : Device configuration is needed for connection.</dd>
 			
 			<dt>const unsigned short NET_TYPE_WIFIDIRECT = 10</dt><dd>Network Type : wifidirect</dd>
 			<dt>const unsigned short NET_TYPE_UPNP = 20</dt><dd>Network Type : UPnP</dd>
@@ -1268,7 +1268,7 @@ var respecConfig = {
 		<h2>DrmAVObject Interface</h2>
 		<p> This interface is defined to handle DRM-related information of object playing DRM-protected contents. 
 		Even if the play itself uses HTML5MediaElement, the application can handle DRM-related APIs without any extension of HTML5MediaElement.</p>
-		<dl title="interface DrmAgent : EventTarget" class="idl">
+		<dl title="interface DrmAVObject : EventTarget" class="idl">
 			<dt>DOMString DRMSystemID(HTMLMediaElement object)</dt>
 			<dd>
 			This method is called to get the ID value of DRM system that is adapt to HTML5 object indicated by parameter.
